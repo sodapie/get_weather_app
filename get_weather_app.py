@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 import pandas as pd
 import requests
@@ -294,7 +293,7 @@ st.title('天気予報取得アプリ')
 selected_area = st.selectbox('エリアを選択してください', list(area_display.keys()))
 # 詳細エリア選択
 if selected_area:
-    selected_place = st.multiselect('詳細エリアを選択してください', list(area_display[selected_area].keys()))
+    selected_place = st.selectbox('詳細エリアを選択してください', list(area_display[selected_area].keys()))
 # 日付選択
 event_date = st.date_input('日付を選択してください', datetime.today())
 
@@ -323,15 +322,20 @@ if st.button('天気予報取得開始'):
             st.session_state.place_list = "_".join([place.replace(" ", "_") for place in selected_place])
 
             # 天気予報データの取得とセッションステートへの保存
-            st.session_state.weather_data = pd.concat(
-                [get_weather(f"{base_url}{area_display[selected_area][place]}/", st.session_state.event_date_str) for place in selected_place]
+            st.session_state.weather_data = get_weather(
+                f"{base_url}{area_display[selected_area][selected_place]}/", st.session_state.event_date_str
             )
-            st.write('天気予報取得完了')
+            
+            # データフレームが空かどうかをチェック
+            if st.session_state.weather_data.empty:
+                st.error('該当するデータが見つかりませんでした')
+            else:
+                st.write('天気予報取得完了')
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # データがセッションステートに保存されている場合は表示
-if st.session_state.weather_data is not None:
+if st.session_state.weather_data is not None and not st.session_state.weather_data.empty:
     df = st.session_state.weather_data
     st.dataframe(df)
 
@@ -346,55 +350,64 @@ if st.session_state.weather_data is not None:
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
-    # fig1のプロットとダウンロードボタン
-    fig1 = plot_temperature(df)
-    st.pyplot(fig1)
-    
-    # Figureをバッファに保存
-    buf1 = io.BytesIO()
-    fig1.savefig(buf1, format="png")
-    buf1.seek(0)
-    
-    st.download_button(
-        label="気温+降水確率plotをダウンロード",
-        data=buf1,
-        file_name=f'overall_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
-        mime='image/png'
-    )
-    buf1.close()
+    try:
+        # fig1のプロットとダウンロードボタン
+        fig1 = plot_temperature(df)
+        st.pyplot(fig1)
+        
+        # Figureをバッファに保存
+        buf1 = io.BytesIO()
+        fig1.savefig(buf1, format="png")
+        buf1.seek(0)
+        
+        st.download_button(
+            label="気温+降水確率plotをダウンロード",
+            data=buf1,
+            file_name=f'overall_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
+            mime='image/png'
+        )
+        buf1.close()
+    except KeyError:
+        st.error('該当するデータが見つかりませんでした')
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
-    # fig2のプロットとダウンロードボタン
-    fig2 = plot_temperature2(df)
-    st.pyplot(fig2)
+    try:
+        # fig2のプロットとダウンロードボタン
+        fig2 = plot_temperature2(df)
+        st.pyplot(fig2)
 
-    buf2 = io.BytesIO()
-    fig2.savefig(buf2, format="png")
-    buf2.seek(0)
-    
-    st.download_button(
-        label="気温plotをダウンロード",
-        data=buf2,
-        file_name=f'temperature_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
-        mime='image/png'
-    )
-    buf2.close()
+        buf2 = io.BytesIO()
+        fig2.savefig(buf2, format="png")
+        buf2.seek(0)
+
+        st.download_button(
+            label="気温plotをダウンロード",
+            data=buf2,
+            file_name=f'temperature_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
+            mime='image/png'
+        )
+        buf2.close()
+    except KeyError:
+        st.error('該当するデータが見つかりませんでした')
 
     st.markdown("<hr>", unsafe_allow_html=True)
 
-    # fig3のプロットとダウンロードボタン
-    fig3 = plot_temperature3(df)
-    st.pyplot(fig3)
+    try:
+        # fig3のプロットとダウンロードボタン
+        fig3 = plot_temperature3(df)
+        st.pyplot(fig3)
 
-    buf3 = io.BytesIO()
-    fig3.savefig(buf3, format="png")
-    buf3.seek(0)
-    
-    st.download_button(
-        label="降水確率plotをダウンロード",
-        data=buf3,
-        file_name=f'chanceofrain_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
-        mime='image/png'
-    )
-    buf3.close()
+        buf3 = io.BytesIO()
+        fig3.savefig(buf3, format="png")
+        buf3.seek(0)
+        
+        st.download_button(
+            label="降水確率plotをダウンロード",
+            data=buf3,
+            file_name=f'chanceofrain_{st.session_state.place_list}_{event_date.strftime("%Y%m%d")}.png',
+            mime='image/png'
+        )
+        buf3.close()
+    except KeyError:
+        st.error('該当するデータが見つかりませんでした')
