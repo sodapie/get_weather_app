@@ -7,5 +7,3 @@ japanize-matplotlib
 matplotlib
 aiohttp==3.9.5
 streamlit==1.33.0
-io
-distutils
