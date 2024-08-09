@@ -319,8 +319,8 @@ if st.button('天気予報取得開始'):
             base_url = 'https://tenmado.app/weatherforecast/'
             
             # 選択された場所をアンダースコアで連結した文字列に変換
-            st.session_state.place_list = "_".join([place.replace(" ", "_") for place in selected_place])
-
+            st.session_state.place_list = selected_place
+            
             # 天気予報データの取得とセッションステートへの保存
             st.session_state.weather_data = get_weather(
                 f"{base_url}{area_display[selected_area][selected_place]}/", st.session_state.event_date_str
