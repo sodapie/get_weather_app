@@ -289,6 +289,23 @@ area_display = {
 
 st.title('天気予報取得アプリ')
 
+st.markdown("<hr>", unsafe_allow_html=True)
+
+st.markdown("""
+### このアプリについて
+
+(テンマド)[https://tenmado.app/weatherforecast/]から以下の情報を取得します:
+
+- '実績日': 天気予報の対象日
+- '天気予報発表日': 実績日の天気予報が発表された日
+- '天気予報': 予報された天気
+- '降水確率': 予報された降水確率
+- '最高気温': 予報された最高気温
+- '最低気温': 予報された最低気温
+""")
+
+st.markdown("<hr>", unsafe_allow_html=True)
+
 # エリア選択
 selected_area = st.selectbox('エリアを選択してください', list(area_display.keys()))
 # 詳細エリア選択
