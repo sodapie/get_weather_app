@@ -1,4 +1,4 @@
-# [テンマド]([https://www.bushikaku.net/](https://tenmado.app/weatherforecast/)から情報をスクレイピングするためのツール
+# [テンマド](https://www.bushikaku.net/](https://tenmado.app/weatherforecast/)から情報をスクレイピングするためのツール
 
 ***
 
