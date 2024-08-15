@@ -304,6 +304,8 @@ st.markdown("""
 - `最低気温`: 予報された最低気温
 """)
 
+また上記の情報をまとめたグラフを取得できます。
+
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # エリア選択
